@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Title Page</title>
+		<meta charset="UTF-8">
+		<meta name=description content="">
+		<meta name=viewport content="width=device-width, initial-scale=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<!-- Bootstrap CSS -->
+		<link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+
+		<link href="http://localhost:5000/static/custom.css" rel="stylesheet">
+	</head>
+	<body>
+		<!-- jQuery -->
+		<script src="http://code.jquery.com/jquery.js"></script>
+		<!-- Bootstrap JavaScript -->
+		<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+
+
+		<script type=text/javascript>
+		$(function() {
+		    $('#run').bind('click', function() {
+		      $('#status').toggleClass('hidden');
+		      $.post('http://localhost:5000/py6sparams', {'aot': $('#aot').val()}, function(data) {
+		        $("#image").attr('src', 'data:image/png;base64,'+data)
+		        $('#status').toggleClass('hidden');
+		      });
+		  });
+
+		    $('#clear').bind('click', function() {
+		   		$.get('http://localhost:5000/clear');
+		   		$('#image').attr('src', '')
+		   	});
+		});
+		</script>
+
+		<script src="http://localhost:5000/static/spin.min.js"></script>
+
+
+
+
+			<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+				<form>
+					<legend>Py6S</legend>
+					<p>This runs Py6S with the given AOT, for a Green Vegetation spectrum</p>
+					<div class="form-group">
+						<label for="aot">AOT</label>
+						<input type="text" class="form-control" id="aot" value="0.25">
+					</div>
+				
+				</form>
+
+				<a id="run" class="btn btn-success has-spinner active">Run</a>
+				<a id="clear" class="btn btn-danger has-spinner active">Clear</a>
+
+				<p id="status" class="text-center hidden">Running...</p>
+			</div>
+		
+			<div id='graph' class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+				<img id="image" src="">
+			</div>
+		
+	</body>
+</html>
