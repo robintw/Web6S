@@ -7,9 +7,10 @@ from Py6S import *
 
 app = Flask(__name__)
 
-@app.route('/image')
-def image():
-  return render_template('image.html')
+@app.route('/')
+@app.route('/index')
+def index():
+  return render_template('index.html')
 
 @app.route('/py6sparams', methods=["POST", "GET"])
 def params():
@@ -57,6 +58,7 @@ def show(x, y, params = "", lab=""):
 @app.route('/clear')
 def clear():
   clf()
+  redirect('index')
 
 if __name__ == '__main__':
   app.run(debug = True)
