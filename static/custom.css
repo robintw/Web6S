@@ -1,3 +1,7 @@
 .hidden {
-  display: none;
+  	display: none;
+}
+
+#status {
+	padding-top: 10px;
 }
