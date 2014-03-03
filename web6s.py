@@ -1,4 +1,4 @@
-from flask import Flask, send_file, render_template, redirect, url_for, request, session
+from flask import Flask, send_file, render_template, redirect, url_for, request, session, g
 from StringIO import StringIO
 import sys
 sys.path.append('/usr/local/lib/python2.6/dist-packages')
@@ -6,13 +6,22 @@ import matplotlib
 matplotlib.use('Agg')
 from Py6S import *
 from matplotlib.pyplot import *
+import pickle
+import os
+
 
 app = Flask(__name__)
 #app.debug = True
 
+app.secret_key = 'gfen3483krjgnporjregiwnw[pr9jr;ef938r\;\;['
+
+
 @app.route('/')
 @app.route('/index')
 def index():
+  if 'id' not in session:
+    import uuid
+    session['id'] = uuid.uuid4()
   return render_template('index.html')
 #   return repr(sys.prefix)
 
@@ -47,21 +56,37 @@ def show(x, y, params = "", lab=""):
   print "Label is:"
   print lab
 
-  plot(xvals, yvals, label=lab)
-  legend()
 
-  xlabel("Wavelength ($\mu m$)")
-  ylabel("Radiance ($W/m^2/sr$)")
+  path = '/tmp/%s.pickle' % session['id']
+  if os.path.exists(path):
+    fig, axes = pickle.load(file(path))
+  else:
+    fig, axes = subplots()
+
+
+  colors = ['blue', 'red', 'green', 'orange', 'black']
+  n_lines = len(axes.lines)
+
+  axes.plot(xvals, yvals, color=colors[n_lines], label=lab)
+  axes.legend()
+
+  axes.set_xlabel("Wavelength ($\mu m$)")
+  axes.set_ylabel("Radiance ($W/m^2/sr$)")
+
+  pickle.dump((fig, axes), file(path, 'w'))
 
   img = StringIO()
-  savefig(img)
+  fig.savefig(img)
   img.seek(0)
   #return send_file(img, mimetype='image/png')
   return img.getvalue().encode("base64").strip()
 
 @app.route('/clear')
 def clear():
-  clf()
+  path = '/tmp/%s.pickle' % session['id']
+
+  os.remove(path)
+  del session['id']
   redirect('index')
 
 if __name__ == '__main__':
