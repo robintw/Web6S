@@ -1,16 +1,20 @@
 from flask import Flask, send_file, render_template, redirect, url_for, request, session
+from StringIO import StringIO
+import sys
+sys.path.append('/usr/local/lib/python2.6/dist-packages')
 import matplotlib
 matplotlib.use('Agg')
-from matplotlib.pyplot import *
-from StringIO import StringIO
 from Py6S import *
+from matplotlib.pyplot import *
 
 app = Flask(__name__)
+app.debug = True
 
 @app.route('/')
 @app.route('/index')
 def index():
   return render_template('index.html')
+#   return repr(sys.prefix)
 
 @app.route('/py6sparams', methods=["POST", "GET"])
 def params():
